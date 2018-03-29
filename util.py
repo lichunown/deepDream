@@ -26,6 +26,7 @@ img_transform = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
+    
 _imgPath = os.path.join(imgDirPath,_testImg)
 
 
@@ -43,16 +44,28 @@ def showMaxID(fname = None, path = tmpDirPath):
     
 def readImg(path = _imgPath,dirs = './'):
     img = Image.open(os.path.join(dirs, path))
-#    img.thumbnail( (int(img.size[0]/2.5), int(img.size[1]/2.5)), Image.ANTIALIAS)
+    img.thumbnail( (int(img.size[0]/4), int(img.size[1]/4)), Image.ANTIALIAS)
     img = img_transform(img).unsqueeze(0)
     return img
 
-def showImg(img):
+#def showImg(img):
+#    mean = np.array([0.485, 0.456, 0.406]).reshape([1, 1, 3])
+#    std = np.array([0.229, 0.224, 0.225]).reshape([1, 1, 3])
+#    if not isinstance(img, np.ndarray):
+#        img = img.numpy()
+#    img = np.clip(np.transpose(img, (1,2,0)) * std + mean,0,1)
+#    return img
+
+def change2img(tensor):
     mean = np.array([0.485, 0.456, 0.406]).reshape([1, 1, 3])
     std = np.array([0.229, 0.224, 0.225]).reshape([1, 1, 3])
-    if not isinstance(img, np.ndarray):
-        img = img.numpy()
-    plt.imshow( np.clip(np.transpose(img, (1,2,0)) * std + mean,0,1))
+    if not isinstance(tensor, np.ndarray):
+        tensor = tensor.numpy()
+    img = np.clip(np.transpose(tensor, (1,2,0)) * std + mean, 0, 255)
+    return img
+    
+def change2Tensor(img):
+    return img_transform(img).unsqueeze(0)
     
 def saveImg(img, name = 'tmp.jpg', dirs = tmpDirPath):
     mean = np.array([0.485, 0.456, 0.406]).reshape([1, 1, 3])
