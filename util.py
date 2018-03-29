@@ -43,7 +43,7 @@ def showMaxID(fname = None, path = tmpDirPath):
     
 def readImg(path = _imgPath,dirs = './'):
     img = Image.open(os.path.join(dirs, path))
-    img.thumbnail( (int(img.size[0]/2.5), int(img.size[1]/2.5)), Image.ANTIALIAS)
+#    img.thumbnail( (int(img.size[0]/2.5), int(img.size[1]/2.5)), Image.ANTIALIAS)
     img = img_transform(img).unsqueeze(0)
     return img
 

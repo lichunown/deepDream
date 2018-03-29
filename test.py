@@ -26,9 +26,11 @@ for g in guideslist:
         try:
             if not findExist(g,layerNum):
                 print('[Running] guide:{}     layerNum:{}'.format(g, layerNum))
-                dream(vgg, readImg(), layerNum = layerNum, 
-                      octave_n = 6, octave_scale=1.1, savename= '{}[{}].jpg'.format(str(g),layerNum),
+                img = readImg()
+                dream(vgg, img, layerNum = layerNum, 
+                      octave_n = 6, octave_scale=1.1, savename= '{}[{}].jpg'.format(str(g).replace('.jpg',''),layerNum),
                       is_control = True if guide is not None else False, control_tensor = guide,
                       learning_rate = 2e-2, max_jitter = 32, num_iterations = 30)
+                del img
         except Exception as e:
             print('error:',e)

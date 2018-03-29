@@ -21,7 +21,9 @@ def objective_guide_diff(dst, guide_features):
     y = guide_features.data[0].cpu().numpy()
     ch, w, h = x.shape
     x = x.reshape(ch,-1)
+    print(x.shape)
     y = y.reshape(ch,-1)
+    print(y.shape)
     A = x.T.dot(y) # compute the matrix of dot-products with guide features
     result = y[:,A.argmax(1)] # select ones that match best
     result = torch.Tensor(np.array([result.reshape(ch, w, h)], dtype=np.float))
@@ -45,21 +47,16 @@ def dream_step(img, model,layerNum=6, control_features = None,
             img_variable = Variable(torch.from_numpy(img), requires_grad=True)
         else:
             img_variable = Variable(img, requires_grad=True)
-        
 #        act_value = model.forward(img_variable, end_layer)
         x = img_variable
         for j in range(1, layerNum):
-#            print('x shape: ',x.shape)
             x = modulelist[j+1](x)
         
         diff_out = difffunc(x, control_features)#distance(act_value, guide_features)
-#        print('diff_out:',diff_out.shape)
         x.backward(diff_out)
-#        print('backward done.')
         ratio = np.abs(img_variable.grad.data.cpu().numpy()).mean()
         learning_rate_use = learning_rate / ratio
         img_variable.data.add_(img_variable.grad.data * learning_rate_use)
-#        print('add_ done.')
         img = img_variable.data.cpu().numpy()
         img = np.roll(np.roll(img, -shift_x, -1), -shift_y, -2)
         img[0, :, :, :] = np.clip(img[0, :, :, :], -mean / std,
@@ -75,7 +72,7 @@ def dream(model, img, layerNum=4, octave_n=6, octave_scale=1.1,savename = 'tmp.j
     
     if control_tensor is not None:
         modulelist = list(model.modules())
-        x = Variable(control_tensor)
+        x = Variable(control_tensor, requires_grad = False)
         for j in range(1, layerNum):
             x = modulelist[j+1](x)
         control_features = x  
