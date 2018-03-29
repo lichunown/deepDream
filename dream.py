@@ -11,8 +11,8 @@ from torch.autograd import Variable
 import numpy as np
 import scipy.ndimage as nd
 from scipy.misc import imresize
-from util import showMaxID,showImg,saveImg,tmpDirPath,change2img,change2Tensor
-import numpy as np
+from util import saveImg,tmpDirPath,change2img,change2Tensor
+
 
 def default_diff(x,guide = None):
     return x.data
