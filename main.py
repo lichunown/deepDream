@@ -44,9 +44,10 @@ from model import vgg
 from dream import dream
 from util import readImg
 
+parser = parser.parse_args()
 print(parser)
 
-if parser.guide:
+if parser.guide is not None:
     guide = readImg(parser.guide)
 else:
     guide = None
